@@ -51,13 +51,13 @@ class Order(models.Model):
         null=True
     )
     is_paid = models.BooleanField(default=False)
-    customer = models.ForeignKey(
-        Customer,
-        on_delete=models.CASCADE,
-        related_name='orders',
-        blank=True,
-        null=True
-    )
+#    customer = models.ForeignKey(
+#        Customer,
+#        on_delete=models.CASCADE,
+#        related_name='orders',
+#        blank=True,
+#        null=True
+#    )
 
     def process(self):
         store = Store.objects.get(location=self.location)
