@@ -4,13 +4,14 @@ def test_hello(client):
     response = response.content.decode('utf-8')
     assert 'Hello, world!' in response
 
+
 def test_bye(client):
-	response = client.get('/bye/')
-	assert response.status_code == 200
-	assert response.content == b'Bye, world!'
+    response = client.get('/bye/')
+    assert response.status_code == 200
+    assert response.content == b'Bye, world!'
+
 
 def test_third(client):
-	response = client.get('/third/')
-	assert response.status_code == 200
-	assert response.content == b'Third'
-
+    response = client.get('/third/')
+    assert response.status_code == 200
+    assert response.content == b'Third'
