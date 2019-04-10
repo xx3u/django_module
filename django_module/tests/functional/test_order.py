@@ -1,5 +1,5 @@
 from django_module.models import (
-    Order, OrderItem, Product, Store, StoreItem, Customer)
+    Order, OrderItem, Product, Store, StoreItem)
 
 
 def test_order_process(db):
@@ -15,12 +15,8 @@ def test_order_process(db):
         product=product,
         quantity=100
     )
-    customer = Customer.objects.create(
-        name='John'
-    )
     order = Order.objects.create(
         location='Almaty',
-        customer=customer
     )
     OrderItem.objects.create(
         order=order,
@@ -33,4 +29,3 @@ def test_order_process(db):
     assert order.price == 100
     assert order.is_paid is True
     assert store_item.quantity == 90
-    assert order.customer.name is 'John'
