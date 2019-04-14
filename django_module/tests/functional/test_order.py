@@ -62,3 +62,19 @@ def test_order_process_payment_if_amount_less_than_order(db, data):
     with pytest.raises(Exception) as e:
         order.process()
     assert str(e.value) == 'Not enough money'
+
+
+def test_order_process_for_multiple_payments(db, data):
+    product, store, store_item, customer, order, order_item, payment = data
+    payment.amount = 40
+    payment.save()
+    Payment.objects.create(
+        order=order,
+        amount=60,
+        is_confirmed=True
+    )
+    order.process()
+    store_item.refresh_from_db()
+    assert order.price == 100
+    assert order.is_paid is True
+    assert store_item.quantity == 90
