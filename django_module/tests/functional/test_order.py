@@ -87,3 +87,12 @@ def test_order_process_fail_if_payment_is_not_confirmed(db, data):
     with pytest.raises(Exception) as e:
         order.process()
     assert str(e.value) == 'Not enough money'
+
+
+def test_order_process_fail_if_location_is_not_available(db, data):
+    product, store, store_item, customer, order, order_item, payment = data
+    order.location = 'Astana'
+    order.save()
+    with pytest.raises(Exception) as e:
+        order.process()
+    assert str(e.value) == 'Location is not available'
