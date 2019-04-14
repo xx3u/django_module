@@ -78,3 +78,12 @@ def test_order_process_for_multiple_payments(db, data):
     assert order.price == 100
     assert order.is_paid is True
     assert store_item.quantity == 90
+
+
+def test_order_process_fail_if_payment_is_not_confirmed(db, data):
+    product, store, store_item, customer, order, order_item, payment = data
+    payment.is_confirmed = False
+    payment.save()
+    with pytest.raises(Exception) as e:
+        order.process()
+    assert str(e.value) == 'Not enough money'
