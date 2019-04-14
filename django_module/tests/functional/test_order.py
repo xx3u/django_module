@@ -23,6 +23,7 @@ def data():
     )
     order = Order.objects.create(
         location='Almaty',
+        customer=customer
     )
     order_item = OrderItem.objects.create(
         order=order,
@@ -44,6 +45,7 @@ def test_order_process_is_ok(db, data):
     assert order.price == 100
     assert order.is_paid is True
     assert store_item.quantity == 90
+    assert order.customer.name is 'John'
 
 
 def test_order_process_quantity_if_order_more_than_store(db, data):
