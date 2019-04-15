@@ -1,8 +1,13 @@
-def test_hello(client):
+from django_module.models import Order
+
+
+def test_hello(db, client, data):
+    client.login(username='john', password='testjohn')
     response = client.get('/')
     assert response.status_code == 200
     response = response.content.decode('utf-8')
     assert 'Hello, world!' in response
+    assert 'john' in response
 
 
 def test_bye(client):
