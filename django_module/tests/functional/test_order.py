@@ -1,5 +1,7 @@
 import pytest
 
+from django.contrib.auth.models import User
+
 from django_module.models import (
     Order, OrderItem, Product, Store, StoreItem, Customer, Payment)
 
@@ -18,8 +20,10 @@ def data():
         product=product,
         quantity=100
     )
+    user = User.objects.create_user(username='john', password='testjohn')
     customer = Customer.objects.create(
-        name='John'
+        name='John',
+        user=user
     )
     order = Order.objects.create(
         location='Almaty',
@@ -46,6 +50,7 @@ def test_order_process_is_ok(db, data):
     assert order.is_paid is True
     assert store_item.quantity == 90
     assert order.customer.name is 'John'
+    assert order.customer.user.username == 'john'
 
 
 def test_order_process_quantity_if_order_more_than_store(db, data):
