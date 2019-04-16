@@ -1,19 +1,25 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from .exceptions import StoreException, PaymentException
+
 
 class Product(models.Model):
     name = models.CharField(max_length=100)
     price = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        blank=True,
-        null=True
     )
+
+    def __str__(self):
+        return self.name[:50]
 
 
 class Store(models.Model):
-    location = models.CharField(max_length=100, blank=True)
+    location = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.location[:50]
 
 
 class StoreItem(models.Model):
@@ -29,6 +35,9 @@ class StoreItem(models.Model):
     )
     quantity = models.IntegerField()
     location = models.CharField(max_length=100, blank=True)
+
+    def __str__(self):
+        return self.product.name[:50]
 
 
 class Customer(models.Model):
@@ -60,14 +69,17 @@ class Order(models.Model):
     is_paid = models.BooleanField(default=False)
 
     def process(self):
-        store = Store.objects.get(location=self.location)
+        try:
+            store = Store.objects.get(location=self.location)
+        except Store.DoesNotExist:
+            raise StoreException('Location is not available')
         for item in self.items.all():
             store_item = StoreItem.objects.get(
                 store=store,
                 product=item.product,
             )
             if item.quantity > store_item.quantity:
-                raise Exception('Not enough stock')
+                raise StoreException('Not enough stock')
 
             store_item.quantity -= item.quantity
             store_item.save()
@@ -79,7 +91,7 @@ class Order(models.Model):
         confirmed_payments = self.payments.filter(is_confirmed=True)
         paid_amount = sum((payment.amount for payment in confirmed_payments))
         if paid_amount < self.price:
-            raise Exception('Not enough money')
+            raise PaymentException('Not enough money')
 
         self.is_paid = True
         self.save()
@@ -97,8 +109,22 @@ class OrderItem(models.Model):
     )
     quantity = models.IntegerField()
 
+    def __str__(self):
+        return self.product.name[:50]
+
 
 class Payment(models.Model):
+
+    METHOD_CARD = 'card'
+    METHOD_CASH = 'cash'
+    METHOD_QIWI = 'qiwi'
+
+    METHOD_CHOICES = (
+        (METHOD_CARD, METHOD_CARD),
+        (METHOD_CASH, METHOD_CASH),
+        (METHOD_QIWI, METHOD_QIWI)
+    )
+
     order = models.ForeignKey(
         Order,
         on_delete=models.CASCADE,
@@ -107,5 +133,8 @@ class Payment(models.Model):
     amount = models.DecimalField(
         max_digits=10, decimal_places=2,
         blank=True, null=True
+    )
+    method = models.CharField(
+        max_length=10, choices=METHOD_CHOICES, default=METHOD_CARD
     )
     is_confirmed = models.BooleanField(default=False)
