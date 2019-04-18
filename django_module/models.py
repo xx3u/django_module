@@ -1,5 +1,7 @@
 from django.db import models
 
+from django.contrib.auth.models import User
+
 from .exceptions import StoreException, PaymentException
 
 
@@ -52,6 +54,7 @@ class StoreItem(models.Model):
 
 class Customer(models.Model):
     name = models.CharField(max_length=100)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
 
 class Cart(models.Model):
@@ -74,6 +77,11 @@ class Order(models.Model):
         City,
         on_delete=models.CASCADE,
         related_name='order_cities',
+    )
+    customer = models.ForeignKey(
+        Customer,
+        on_delete=models.CASCADE,
+        related_name='orders'
     )
 
     def process(self):

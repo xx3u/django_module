@@ -4,6 +4,8 @@ from django_module.models import (
     Order, OrderItem, Product, Store, StoreItem, Customer, Payment,
     City, Location)
 
+from django.contrib.auth.models import User
+
 
 @pytest.fixture
 def data():
@@ -29,11 +31,19 @@ def data():
         product=product,
         quantity=100
     )
+    user = User.objects.create_user(
+        username='john',
+        password='testjohn'
+    )
     customer = Customer.objects.create(
-        name='John'
+        name='John',
+        user=user
     )
     order = Order.objects.create(
+        price=10,
+        is_paid=True,
         city=city,
+        customer=customer
     )
     order_item = OrderItem.objects.create(
         order=order,
@@ -47,5 +57,5 @@ def data():
     )
     return (
         product, city, city_2, location, store, store_item, customer, order,
-        order_item, payment
+        order_item, payment, user
     )
