@@ -45,14 +45,6 @@ class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
 
-class Cart(models.Model):
-    customer = models.ForeignKey(
-        Customer,
-        on_delete=models.CASCADE,
-        related_name='carts'
-    )
-
-
 class Order(models.Model):
     location = models.CharField(max_length=100, blank=True)
     price = models.DecimalField(
