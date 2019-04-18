@@ -1,10 +1,10 @@
 import pytest
 
-from django.contrib.auth.models import User
-
 from django_module.models import (
     Order, OrderItem, Product, Store, StoreItem, Customer, Payment,
     City, Location)
+
+from django.contrib.auth.models import User
 
 
 @pytest.fixture

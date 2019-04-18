@@ -11,15 +11,26 @@ class Product(models.Model):
         decimal_places=2,
     )
 
-    def __str__(self):
-        return self.name[:50]
+
+class City(models.Model):
+    name = models.CharField(max_length=100)
+
+
+class Location(models.Model):
+    city = models.ForeignKey(
+        City,
+        on_delete=models.CASCADE,
+        related_name='locations'
+    )
+    address = models.CharField(max_length=100)
 
 
 class Store(models.Model):
-    location = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.location[:50]
+    location = models.ForeignKey(
+        Location,
+        on_delete=models.CASCADE,
+        related_name='store_locations'
+    )
 
 
 class StoreItem(models.Model):
@@ -46,7 +57,6 @@ class Customer(models.Model):
 
 
 class Order(models.Model):
-    location = models.CharField(max_length=100, blank=True)
     price = models.DecimalField(
         max_digits=10,
         decimal_places=2,
@@ -59,10 +69,20 @@ class Order(models.Model):
         related_name='orders'
     )
     is_paid = models.BooleanField(default=False)
+    city = models.ForeignKey(
+        City,
+        on_delete=models.CASCADE,
+        related_name='order_cities',
+    )
+    customer = models.ForeignKey(
+        Customer,
+        on_delete=models.CASCADE,
+        related_name='orders'
+    )
 
     def process(self):
         try:
-            store = Store.objects.get(location=self.location)
+            store = Store.objects.get(location__city=self.city)
         except Store.DoesNotExist:
             raise StoreException('Location is not available')
         for item in self.items.all():

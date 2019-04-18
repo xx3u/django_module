@@ -23,7 +23,7 @@ class OrderItemInLine(admin.StackedInline):
 
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'location')
+    list_display = ('id', 'city')
     inlines = (OrderItemInLine,)
 
 

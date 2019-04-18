@@ -9,7 +9,9 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('django_module', '0008_order_customer'),
+
+      ('django_module', '0008_order_customer'),
+
     ]
 
     operations = [
