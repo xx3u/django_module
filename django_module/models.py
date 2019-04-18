@@ -74,14 +74,11 @@ class Order(models.Model):
         City,
         on_delete=models.CASCADE,
         related_name='order_cities',
-        blank=True,
-        null=True
     )
 
     def process(self):
         try:
-            store = Store.objects.get(
-                location__city=self.city)
+            store = Store.objects.get(location__city=self.city)
         except Store.DoesNotExist:
             raise StoreException('Location is not available')
         for item in self.items.all():
