@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 from django.contrib.auth.models import User
 
@@ -71,6 +72,11 @@ class Order(models.Model):
         decimal_places=2,
         blank=True,
         null=True
+    )
+    customer = models.ForeignKey(
+        Customer,
+        on_delete=models.CASCADE,
+        related_name='orders'
     )
     is_paid = models.BooleanField(default=False)
     city = models.ForeignKey(
