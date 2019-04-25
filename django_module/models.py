@@ -89,11 +89,6 @@ class Order(models.Model):
         on_delete=models.CASCADE,
         related_name='order_cities',
     )
-    customer = models.ForeignKey(
-        Customer,
-        on_delete=models.CASCADE,
-        related_name='orders'
-    )
 
     def process(self):
         try:
