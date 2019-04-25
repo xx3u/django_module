@@ -27,6 +27,12 @@ def test_order_item_price_signal_ok(db, data):
     assert order.price == 300
 
 
+def test_order_item_paid_signal_ok(db, data):
+    (product, city, location, store, store_item,
+        customer, order, order_item, payment, user) = data
+    assert order.is_paid is True
+
+
 def test_order_process_quantity_if_order_more_than_store(db, data):
     (product, city, location, store, store_item,
         customer, order, order_item, payment, user) = data
