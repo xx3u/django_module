@@ -22,6 +22,8 @@ def test_order_item_price_signal_ok(db, data):
         customer, order, order_item, payment, user) = data
     assert order.price == 100
     OrderItem.objects.create(order=order, product=product, quantity=20)
+    assert order.items.count() == 1
+    order.items.first().quantity == 30
     assert order.price == 300
 
 

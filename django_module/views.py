@@ -20,7 +20,3 @@ def order(request, order_id):
 
 def bye(request):
     return HttpResponse('Bye, world!')
-
-
-def third(request):
-    return HttpResponse('Third')
