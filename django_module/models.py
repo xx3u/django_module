@@ -11,9 +11,15 @@ class Product(models.Model):
         decimal_places=2,
     )
 
+    def __str__(self):
+        return self.name
+
 
 class City(models.Model):
     name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
 
 
 class Location(models.Model):
@@ -24,6 +30,9 @@ class Location(models.Model):
     )
     address = models.CharField(max_length=100)
 
+    def __str__(self):
+        return self.city.name
+
 
 class Store(models.Model):
     location = models.ForeignKey(
@@ -31,6 +40,9 @@ class Store(models.Model):
         on_delete=models.CASCADE,
         related_name='stores'
     )
+
+    def __str__(self):
+        return self.location
 
 
 class StoreItem(models.Model):
@@ -54,6 +66,9 @@ class StoreItem(models.Model):
 class Customer(models.Model):
     name = models.CharField(max_length=100)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
 
 
 class Order(models.Model):
