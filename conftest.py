@@ -16,9 +16,6 @@ def data():
     city = City.objects.create(
         name='Amsterdam'
     )
-    city_2 = City.objects.create(
-        name='Astana'
-    )
     location = Location.objects.create(
         city=city,
         address='Schiphol 111'
@@ -56,6 +53,6 @@ def data():
         is_confirmed=True
     )
     return (
-        product, city, city_2, location, store, store_item, customer, order,
+        product, city, location, store, store_item, customer, order,
         order_item, payment, user
     )

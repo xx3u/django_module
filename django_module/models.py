@@ -29,7 +29,7 @@ class Store(models.Model):
     location = models.ForeignKey(
         Location,
         on_delete=models.CASCADE,
-        related_name='store_locations'
+        related_name='stores'
     )
 
 
