@@ -1,8 +1,6 @@
-<html>
-<head>
-    <title>Hello</title>
-</head> 
-<body>
+{% extends "base.html" %}
+
+{% block content %}
     <p>Hello, world!</p>
     <p>Hi, {{ request.user }}</p>
     <ul>
@@ -11,5 +9,4 @@
         <li>{{ order.id }}</li></a>
         {% endfor %}
     </ul>
-</body>
-</html>
+{% endblock %}
