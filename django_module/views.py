@@ -5,7 +5,9 @@ from .models import Order
 
 
 def hello(request):
-    orders = Order.objects.filter(customer__user=request.user)
+    orders = []
+    if request.user.is_authenticated:
+        orders = Order.objects.filter(customer__user=request.user)
     return render(request, 'hello.html', context={
         'orders': orders
     })
