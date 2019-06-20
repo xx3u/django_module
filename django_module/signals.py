@@ -1,6 +1,6 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from .models import OrderItem, Order, Payment
+from .models import OrderItem, Payment
 
 
 @receiver(post_save, sender=OrderItem)
@@ -30,8 +30,5 @@ def order_item_paid_post_save(sender, **kwargs):
 
     confirmed_payments = order.payments.filter(is_confirmed=True)
     paid_amount = sum((payment.amount for payment in confirmed_payments))
-    if paid_amount >= order.price:
-        order.is_paid = True
-        order.save()
-    else:
-        order.is_paid = False
+    order.is_paid = paid_amount >= order.price
+    order.save()
