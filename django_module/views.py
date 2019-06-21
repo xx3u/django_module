@@ -40,8 +40,11 @@ def order(request, order_id):
             )
         else:
             return HttpResponse('Validation error', status=400)
+    else:
+        form = OrderItemForm()
     return render(request, 'order.html', context={
-        'order': order
+        'order': order,
+        'form': form
     })
 
 
