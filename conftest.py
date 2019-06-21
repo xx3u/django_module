@@ -1,8 +1,7 @@
 import pytest
 
 from django_module.models import (
-    Order, OrderItem, Product, Store, StoreItem, Customer, Payment,
-    City, Location)
+    Order, OrderItem, Product, Store, StoreItem, Customer, Payment)
 
 from django.contrib.auth.models import User
 
@@ -13,15 +12,8 @@ def data():
         name='TV',
         price=10
     )
-    city = City.objects.create(
-        name='Amsterdam'
-    )
-    location = Location.objects.create(
-        city=city,
-        address='Schiphol 111'
-    )
     store = Store.objects.create(
-        location=location
+        location='Almaty'
     )
     store_item = StoreItem.objects.create(
         store=store,
@@ -39,7 +31,7 @@ def data():
     order = Order.objects.create(
         price=10,
         is_paid=True,
-        city=city,
+        location='Almaty',
         customer=customer
     )
     order_item = OrderItem.objects.create(
@@ -53,6 +45,6 @@ def data():
         is_confirmed=True
     )
     return (
-        product, city, location, store, store_item, customer, order,
+        product, store, store_item, customer, order,
         order_item, payment, user
     )

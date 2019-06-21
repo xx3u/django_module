@@ -12,21 +12,24 @@ def test_hello(db, client, data):
     assert 'john' in response
     response = html.fromstring(response)
     orders = Order.objects.filter(customer__user__username='john')
-    assert len(response.cssselect('li')) == orders.count()
+    items = response.cssselect('.list-group-item > a')
+    assert len(items) == orders.count()
+    assert items[0].text == '1'
 
 
-def test_order_view(db, client, data):
-    response = client.get('/orders/1/')
+def test_order_add(db, client, data):
+    client.login(username='john', password='testjohn')
+    response = client.post('/', {'location': 'Amsterdam'})
     assert response.status_code == 200
     response = response.content.decode('utf-8')
     response = html.fromstring(response)
-    items = response.cssselect('.list-group-item')
-    assert items[0].text == 'TV 10'
-    assert response.cssselect('#product') != []
-    assert response.cssselect('#quantity') != []
+    orders = response.cssselect('.list-group-item > a')
+    assert len(orders) == 2
+    assert orders[0].text == '1'
+    assert orders[1].text == '2'
 
 
-def test_order_add_same(db, client, data):
+def test_order_add_item_same(db, client, data):
     response = client.post('/orders/1/', {'product': 1, 'quantity': 10})
     assert response.status_code == 200
     response = response.content.decode('utf-8')
@@ -35,7 +38,7 @@ def test_order_add_same(db, client, data):
     assert items[0].text == 'TV 20'
 
 
-def test_order_add_new(db, client, data):
+def test_order_add_item_new(db, client, data):
     notebook = Product.objects.create(name='notebook', price=20)
     response = client.post(
         '/orders/1/',
@@ -49,42 +52,42 @@ def test_order_add_new(db, client, data):
     assert items[1].text == 'notebook 30'
 
 
-def test_order_add_product_doesnt_exist(db, client, data):
+def test_order_add_item_product_doesnt_exist(db, client, data):
     response = client.post('/orders/1/', {'product': 10, 'quantity': ''})
     assert response.status_code == 404
     response = response.content.decode('utf-8')
     assert response == 'Product not found'
 
 
-def test_order_add_invalid_product_id(db, client, data):
+def test_order_add_item_invalid_product_id(db, client, data):
     response = client.post('/orders/1/', {'product': 'asd', 'quantity': ''})
     assert response.status_code == 400
     response = response.content.decode('utf-8')
     assert response == 'Invalid product id'
 
 
-def test_order_add_empty_quantity(db, client, data):
+def test_order_add_item_empty_quantity(db, client, data):
     response = client.post('/orders/1/', {'product': 1, 'quantity': ''})
     assert response.status_code == 400
     response = response.content.decode('utf-8')
     assert response == 'Quantity must be a positive int'
 
 
-def test_order_add_nonint_quantity(db, client, data):
+def test_order_add_item_nonint_quantity(db, client, data):
     response = client.post('/orders/1/', {'product': 1, 'quantity': 'asd'})
     assert response.status_code == 400
     response = response.content.decode('utf-8')
     assert response == 'Quantity must be a positive int'
 
 
-def test_order_add_zero_quantity(db, client, data):
+def test_order_add_item_zero_quantity(db, client, data):
     response = client.post('/orders/1/', {'product': 1, 'quantity': 0})
     assert response.status_code == 400
     response = response.content.decode('utf-8')
     assert response == 'Quantity must be a positive int'
 
 
-def test_order_add_negative_quantity(db, client, data):
+def test_order_add_item_negative_quantity(db, client, data):
     response = client.post('/orders/1/', {'product': 1, 'quantity': -10})
     assert response.status_code == 400
     response = response.content.decode('utf-8')

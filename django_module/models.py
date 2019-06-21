@@ -15,31 +15,8 @@ class Product(models.Model):
         return self.name
 
 
-class City(models.Model):
-    name = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.name
-
-
-class Location(models.Model):
-    city = models.ForeignKey(
-        City,
-        on_delete=models.CASCADE,
-        related_name='locations'
-    )
-    address = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.city.name
-
-
 class Store(models.Model):
-    location = models.ForeignKey(
-        Location,
-        on_delete=models.CASCADE,
-        related_name='stores'
-    )
+    location = models.CharField(max_length=100)
 
     def __str__(self):
         return self.location
@@ -57,7 +34,6 @@ class StoreItem(models.Model):
         related_name='store_items'
     )
     quantity = models.IntegerField()
-    location = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
         return self.product.name[:50]
@@ -84,15 +60,11 @@ class Order(models.Model):
         related_name='orders'
     )
     is_paid = models.BooleanField(default=False)
-    city = models.ForeignKey(
-        City,
-        on_delete=models.CASCADE,
-        related_name='order_cities',
-    )
+    location = models.CharField(max_length=100)
 
     def process(self):
         try:
-            store = Store.objects.get(location__city=self.city)
+            store = Store.objects.get(location=self.location)
         except Store.DoesNotExist:
             raise StoreException('Location is not available')
         for item in self.items.all():

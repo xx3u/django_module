@@ -1,13 +1,18 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from .models import Order, OrderItem, Product
+from .models import Order, OrderItem, Product, Customer
 
 
 def hello(request):
-    orders = []
-    if request.user.is_authenticated:
-        orders = Order.objects.filter(customer__user=request.user)
+    if request.method == 'POST':
+        customer = Customer.objects.get(user=request.user)
+        location = request.POST.get('location')
+        Order.objects.create(
+            customer=customer,
+            location=location
+        )
+    orders = Order.objects.filter(customer__user=request.user)
     return render(request, 'hello.html', context={
         'orders': orders
     })
