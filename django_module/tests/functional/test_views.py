@@ -17,6 +17,17 @@ def test_hello(db, client, data):
     assert items[0].text == '1'
 
 
+def test_order_view(db, client, data):
+    response = client.get('/orders/1/')
+    assert response.status_code == 200
+    response = response.content.decode('utf-8')
+    response = html.fromstring(response)
+    items = response.cssselect('.list-group-item')
+    assert items[0].text == 'TV 10'
+    assert response.cssselect('#id_product') != []
+    assert response.cssselect('#id_quantity') != []
+
+
 def test_order_add(db, client, data):
     client.login(username='john', password='testjohn')
     response = client.post('/', {'location': 'Amsterdam'})
