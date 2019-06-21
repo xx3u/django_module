@@ -36,7 +36,7 @@ def test_order_add_same(db, client, data):
 
 
 def test_order_add_new(db, client, data):
-    notebook = Product.objects.create(name='Notebook', price=20)
+    notebook = Product.objects.create(name='notebook', price=20)
     response = client.post(
         '/orders/1/',
         {'product': notebook.id, 'quantity': 30}
@@ -46,7 +46,21 @@ def test_order_add_new(db, client, data):
     response = html.fromstring(response)
     items = response.cssselect('.list-group-item')
     assert items[0].text == 'TV 10'
-    assert items[1].text == 'Notebook 30'
+    assert items[1].text == 'notebook 30'
+
+
+def test_order_add_product_doesnt_exist(db, client, data):
+    response = client.post('/orders/1/', {'product': 10, 'quantity': ''})
+    assert response.status_code == 404
+    response = response.content.decode('utf-8')
+    assert response == 'Product not found'
+
+
+def test_order_add_invalid_product_id(db, client, data):
+    response = client.post('/orders/1/', {'product': 'asd', 'quantity': ''})
+    assert response.status_code == 400
+    response = response.content.decode('utf-8')
+    assert response == 'Invalid product id'
 
 
 def test_order_add_empty_quantity(db, client, data):
