@@ -1,15 +1,30 @@
-from django.http import HttpResponse
+from django.contrib.auth import authenticate, login
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 
 from .models import Order, OrderItem, Product, Customer
 from .forms import OrderItemForm
 
 
-def hello(request):
-    products = []
+def login_view(request):
     if request.user.is_authenticated:
-        products = Product.objects.all()
-    return render(request, 'orders.html', context={
+        print('authenticated')
+    if request.method == 'POST':
+        user = authenticate(
+            username=request.POST.get('username'),
+            password=request.POST.get('password')
+        )
+        if user is not None:
+            login(request, user)
+            return HttpResponseRedirect('/')
+        else:
+            return HttpResponse('wrong username or password', status=401)
+    return render(request, 'login.html')
+
+
+def hello(request):
+    products = Product.objects.all()
+    return render(request, 'hello.html', context={
         'products': products
     })
 
@@ -23,7 +38,7 @@ def order_list(request):
             location=location
         )
     orders = Order.objects.filter(customer__user=request.user)
-    return render(request, 'hello.html', context={
+    return render(request, 'orders.html', context={
         'orders': orders
     })
 

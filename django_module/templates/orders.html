@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
- {% block content %}
+{% block content %}
     <ul class="list-group">
         {% for order in orders %}
         <li class="list-group-item"><a href="{% url 'order_detail' order.id %}">{{ order.id }}</a></li>

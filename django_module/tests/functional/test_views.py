@@ -3,12 +3,26 @@ from lxml import html
 from django_module.models import Order, Product
 
 
+def test_login(db, client, data):
+    response = client.post(
+        '/login/', {'username': 'john', 'password': 'testjohn'}
+    )
+    assert response.status_code == 302
+
+
+def test_login_fail(db, client, data):
+    response = client.post(
+        '/login/', {'username': 'john', 'password': 'wrongpassword'}
+    )
+    assert response.status_code == 401
+
+
 def test_hello(db, client, data):
-    client.login(username='li', password='testli')
+    client.login(username='john', password='testjohn')
     response = client.get('/')
     assert response.status_code == 200
     response = response.content.decode('utf-8')
-    assert 'li' in response
+    assert 'john' in response
     response = html.fromstring(response)
     a = response.cssselect('a[href="/orders/"]')
     assert len(a) == 1
