@@ -6,15 +6,17 @@ from .forms import OrderItemForm
 
 
 def hello(request):
-    if request.method == 'POST':
-        customer = Customer.objects.get(user=request.user)
-        location = request.POST.get('location')
-        Order.objects.create(
-            customer=customer,
-            location=location
-        )
-    orders = Order.objects.filter(customer__user=request.user)
-    return render(request, 'hello.html', context={
+    orders = []
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            customer = Customer.objects.get(user=request.user)
+            location = request.POST.get('location')
+            Order.objects.create(
+                customer=customer,
+                location=location
+            )
+        orders = Order.objects.filter(customer__user=request.user)
+    return render(request, 'orders.html', context={
         'orders': orders
     })
 
