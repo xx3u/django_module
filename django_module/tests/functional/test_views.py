@@ -4,14 +4,17 @@ from django_module.models import Order, Product
 
 
 def test_hello(db, client, data):
-    client.login(username='john', password='testjohn')
+    client.login(username='li', password='testli')
     response = client.get('/')
     assert response.status_code == 200
     response = response.content.decode('utf-8')
-    assert 'john' in response
+    assert 'li' in response
     response = html.fromstring(response)
     a = response.cssselect('a[href="/orders/"]')
     assert len(a) == 1
+    products = response.cssselect('.list-group-item')
+    assert len(products) == Product.objects.count()
+    assert products[0].text == 'TV 10.00'
 
 
 def test_order_view(db, client, data):
