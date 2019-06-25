@@ -1,26 +1,11 @@
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
-from django.views import View
 from django.views.generic import ListView
 from django.views.generic.base import TemplateView
 
 from .models import Order, OrderItem, Product, Customer
 from .forms import OrderItemForm
-
-
-class LoginView(View):
-    def post(self, request):
-        user = authenticate(
-            username=request.POST.get('username'),
-            password=request.POST.get('password')
-        )
-        if user is not None:
-            login(request, user)
-            return HttpResponseRedirect('/')
-        else:
-            return HttpResponse('wrong username or password', status=401)
-        return render(request, 'login.html')
 
 
 class HelloView(ListView):
