@@ -2,13 +2,13 @@
 
 {% block content %}
     <ul class="list-group">
-        {% for item in order.items.all %}
-        <li class="list-group-item">{{ item.product.name }} {{ item.quantity }}</li>
+        {% for order in orders %}
+        <li class="list-group-item"><a href="{% url 'order_detail' order.id %}">{{ order.id }}</a></li>
         {% endfor %}
     </ul>
     <form method="POST">
     {% csrf_token %}
-    {{ form }}
+    <input type="text" id="location" name="location"/>
     <input type="submit"/>
     </form>
 {% endblock %}

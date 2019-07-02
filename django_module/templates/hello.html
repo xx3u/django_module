@@ -1,12 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <p>Hello, world!</p>
     <p>Hi, {{ request.user }}</p>
+    <a href="{% url 'order_list' %}">orders</a>
     <ul class="list-group">
-        {% for order in orders %}
-        <a href="orders/{{ order.id }}/">
-        <li class="list-group-item"><a href="{% url 'orders' order.id %}">{{ order.id }}</a></li>
+        {% for product in products %}
+        <li class="list-group-item">{{ product.name }} {{ product.price }}</li>
         {% endfor %}
-    </ul>
+    </ul>       
 {% endblock %}

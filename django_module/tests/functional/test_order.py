@@ -1,12 +1,12 @@
 import pytest
 
-from django_module.models import Payment, Order, City, OrderItem
+from django_module.models import Payment, Order, OrderItem
 
 from django_module.exceptions import StoreException, PaymentException
 
 
 def test_order_process_is_ok(db, data):
-    (product, city, location, store, store_item,
+    (product, store, store_item,
         customer, order, order_item, payment, user) = data
     assert order.price == 100
     order.process()
@@ -18,7 +18,7 @@ def test_order_process_is_ok(db, data):
 
 
 def test_order_item_price_signal_ok(db, data):
-    (product, city, location, store, store_item,
+    (product, store, store_item,
         customer, order, order_item, payment, user) = data
     assert order.price == 100
     OrderItem.objects.create(order=order, product=product, quantity=20)
@@ -28,13 +28,13 @@ def test_order_item_price_signal_ok(db, data):
 
 
 def test_order_item_paid_signal_ok(db, data):
-    (product, city, location, store, store_item,
+    (product, store, store_item,
         customer, order, order_item, payment, user) = data
     assert order.is_paid is True
 
 
 def test_order_process_quantity_if_order_more_than_store(db, data):
-    (product, city, location, store, store_item,
+    (product, store, store_item,
         customer, order, order_item, payment, user) = data
     order_item.quantity = 200
     order_item.save()
@@ -44,7 +44,7 @@ def test_order_process_quantity_if_order_more_than_store(db, data):
 
 
 def test_order_process_payment_if_amount_less_than_order(db, data):
-    (product, city, location, store, store_item,
+    (product, store, store_item,
         customer, order, order_item, payment, user) = data
     payment.amount = 10
     payment.save()
@@ -54,7 +54,7 @@ def test_order_process_payment_if_amount_less_than_order(db, data):
 
 
 def test_order_process_for_multiple_payments(db, data):
-    (product, city, location, store, store_item,
+    (product, store, store_item,
         customer, order, order_item, payment, user) = data
     payment.amount = 40
     payment.save()
@@ -71,7 +71,7 @@ def test_order_process_for_multiple_payments(db, data):
 
 
 def test_order_process_fail_if_payment_is_not_confirmed(db, data):
-    (product, city, location, store, store_item,
+    (product, store, store_item,
         customer, order, order_item, payment, user) = data
     payment.is_confirmed = False
     payment.save()
@@ -81,14 +81,12 @@ def test_order_process_fail_if_payment_is_not_confirmed(db, data):
 
 
 def test_order_process_fail_if_location_is_not_available(db, data):
-    (product, city, location, store, store_item,
+    (product, store, store_item,
         customer, order, order_item, payment, user) = data
     order = Order.objects.create(
         price=10,
         is_paid=True,
-        city=City.objects.create(
-            name='Astana'
-        ),
+        location='Astana',
         customer=customer
     )
     order.save()
