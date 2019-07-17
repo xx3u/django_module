@@ -1,0 +1,43 @@
+<article class="card card-product">
+    <div class="card-body">
+    <div class="row">
+        <aside class="col-sm-3">
+            {% if product.image %}
+            <div class="img-wrap"><img src="{{ product.image.url }}"></div>
+            {% endif %}
+        </aside> <!-- col.// -->
+        <article class="col-sm-6">
+                <h4 class="title">{{ product.name }}</h4>
+                <p> Super Duper Class </p>
+                <dl class="dlist-align">
+                  <dt>Color</dt>
+                  <dd>AttributeValue</dd>
+                </dl>  <!-- item-property-hor .// -->
+                <dl class="dlist-align">
+                  <dt>Size</dt>
+                  <dd>AttributeValue</dd>
+                </dl>  <!-- item-property-hor .// -->
+                <dl class="dlist-align">
+                  <dt>Manufacturer</dt>
+                  <dd>Russia, USA, and Europe</dd>
+                </dl>  <!-- item-property-hor .// -->
+        </article> <!-- col.// -->
+        <aside class="col-sm-3 border-left">
+            <div class="action-wrap">
+                <div class="price-wrap h4">
+                    <span class="price">${{ product.price }}</span>    
+                </div> <!-- info-price-detail // -->
+                <p class="text-success">Free shipping</p>
+                <br>
+                <p>
+                    <form action="{% url 'order_list' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="product_id" value="{{ product.id }}">
+                        <input class="btn btn-primary" type="submit" value="Buy now"/>
+                    </form>
+                </p>
+            </div> <!-- action-wrap.// -->
+        </aside> <!-- col.// -->
+    </div> <!-- row.// -->
+    </div> <!-- card-body .// -->
+</article>

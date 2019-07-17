@@ -10,6 +10,7 @@ class Product(models.Model):
         max_digits=10,
         decimal_places=2,
     )
+    image = models.ImageField(blank=True)
 
     def __str__(self):
         return self.name

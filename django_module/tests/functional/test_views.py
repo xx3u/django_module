@@ -1,5 +1,6 @@
 from lxml import html
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 from django_module.models import Order, Product, Customer
 
@@ -19,18 +20,45 @@ def test_login_fail(db, client, data):
     assert b'Please enter a correct username and password.' in response.content
 
 
-def test_hello(db, client, data):
+def test_logout(db, client, data):
+    client.login(username='john', password='testjohn')
+    response = client.post('/logout/', follow=True)
+    assert response.status_code == 200
+    response = response.content.decode('utf-8')
+    response = html.fromstring(response)
+    assert len(response.cssselect('input[name="username"]')) == 1
+
+
+def test_home(db, client, data):
     client.login(username='john', password='testjohn')
     response = client.get('/')
     assert response.status_code == 200
     response = response.content.decode('utf-8')
-    assert 'john' in response
     response = html.fromstring(response)
-    a = response.cssselect('a[href="/orders/"]')
+
+    # Assert dropdown with username is in navbar
+    a = response.cssselect('a[class="nav-link dropdown-toggle"]')
     assert len(a) == 1
-    products = response.cssselect('.list-group-item')
-    assert len(products) == Product.objects.count()
-    assert products[0].text == 'TV 10.00'
+    assert a[0].text.strip() == 'john'
+
+    # Assert there is a link to home page
+    url = reverse('home')
+    selector = 'a.nav-link[href="{}"]'.format(url)
+    a = response.cssselect(selector)
+    assert len(a) == 1
+    assert a[0].text == 'Home'
+
+    # Assert there is a link to orders
+    url = reverse('order_list')
+    selector = 'a.nav-link[href="{}"]'.format(url)
+    a = response.cssselect(selector)
+    assert len(a) == 1
+    assert a[0].text == 'Orders'
+
+    # Assert there is a list of products with product name and price
+    #products = response.cssselect('.list-group-item')
+    #assert len(products) == Product.objects.count()
+    #assert products[0].text == 'TV 10.00'
 
 
 def test_order_view(db, client, data):
@@ -46,14 +74,18 @@ def test_order_view(db, client, data):
 
 def test_order_add(db, client, data):
     client.login(username='john', password='testjohn')
-    response = client.post('/orders/', {'location': 'Amsterdam'})
+    response = client.post(
+        '/orders/',
+        {'location': 'Almaty', 'product_id': 1},
+        follow=True
+    )
     assert response.status_code == 200
+    last_url, status_code = response.redirect_chain[-1]
+    assert last_url == '/orders/2/'
     response = response.content.decode('utf-8')
     response = html.fromstring(response)
-    orders = response.cssselect('.list-group-item > a')
-    assert len(orders) == 2
-    assert orders[0].text == '1'
-    assert orders[1].text == '2'
+    items = response.cssselect('.list-group-item')
+    assert items[0].text == 'TV 1'
 
 
 def test_order_add_item_same(db, client, data):

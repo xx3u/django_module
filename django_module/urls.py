@@ -15,16 +15,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import path
 
 from . import views
 
 
 urlpatterns = [
-    path('', views.HelloView.as_view()),
+    path('', views.HomeView.as_view(), name='home'),
     path('login/', auth_views.LoginView.as_view(template_name='login.html')),
+    path('logout/', auth_views.LogoutView.as_view()),
     path('orders/', views.OrderListView.as_view(), name='order_list'),
     path('orders/<int:order_id>/', views.order_detail, name='order_detail'),
     path('bye/', views.ByeView.as_view()),
     path('admin/', admin.site.urls),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
