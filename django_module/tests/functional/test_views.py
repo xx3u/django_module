@@ -56,9 +56,9 @@ def test_home(db, client, data):
     assert a[0].text == 'Orders'
 
     # Assert there is a list of products with product name and price
-    #products = response.cssselect('.list-group-item')
-    #assert len(products) == Product.objects.count()
-    #assert products[0].text == 'TV 10.00'
+    products = response.cssselect('.list-group-item')
+    assert len(products) == Product.objects.count()
+    assert products[0].text == 'TV 10.00'
 
 
 def test_order_view(db, client, data):
