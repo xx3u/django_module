@@ -12,3 +12,10 @@ deploy:
   script: fab -i xx3u.pem -H ubuntu@134.209.228.212 deploy
   on:
     branc: master
+
+- eval "$(ssh-agent -s)"
+- chmod 600 ./xx3u.pem
+- echo -e "Host $SERVER_IP_ADDRESS\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+- ssh-add ./xx3u.pem
+# test ssh connection for: https://github.com/dwyl/learn-travis/issues/42
+- ssh -i ./xx3u.pem root@134.209.228.212 pwd
