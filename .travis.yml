@@ -4,14 +4,13 @@ python:
 - '3.6'
 before_install:
 - openssl aes-256-cbc -K $encrypted_3a7458c04994_key -iv $encrypted_3a7458c04994_iv
-  -in xx3u.pem.enc -out xx3u.pem -d
+  -in id_rsa.enc -out id_rsa -d
+
 install: pip install -r requirements.txt
-
 script: pytest -v --cov . --cov-report term-missing --cov-fail-under=100
-
 deploy:
   skip_cleanup: true
   provider: script
-  script: fab -i xx3u.pem -H root@134.209.228.212 deploy
+  script: fab -i id_rsa -H root@134.209.228.212 deploy
   on:
     branc: master
