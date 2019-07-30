@@ -3,7 +3,7 @@ language: python
 python:
 - '3.6'
 before_install:
-- openssl aes-256-cbc -K $encrypted_3a7458c04994_key -iv $encrypted_3a7458c04994_iv
+- openssl aes-256-cbc -K $encrypted_e56095823506_key -iv $encrypted_e56095823506_iv
   -in id_rsa.enc -out id_rsa -d
 
 install: pip install -r requirements.txt
