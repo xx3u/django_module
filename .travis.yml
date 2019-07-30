@@ -8,9 +8,10 @@ before_install:
 install: pip install -r requirements.txt
 
 script: pytest -v --cov . --cov-report term-missing --cov-fail-under=100
+
 deploy:
   skip_cleanup: true
   provider: script
-  script: fab -i xx3u.pem -H ubuntu@134.209.228.212 deploy
+  script: fab -i xx3u.pem -H root@134.209.228.212 deploy
   on:
     branc: master
