@@ -10,6 +10,6 @@ install: pip install -r requirements.txt
 script: pytest -v --cov . --cov-report term-missing --cov-fail-under=100
 deploy:
   provider: script
-  script: fab -i aws_stockholm.pem -H ubuntu@13.53.174.164 deploy
+  script: fab -i xx3u.pem -H ubuntu@134.209.228.2125 deploy
   on:
     branc: master
