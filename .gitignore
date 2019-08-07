@@ -3,5 +3,4 @@ db.sqlite3
 __pycache__
 media
 .coverage
-ubuntu@13.53.76.207
 *.pyc
